@@ -1,113 +1,140 @@
-# LegalEase
-## ⚖️ Simplifying Legal Access for All Indians
-LegalEase is an AI-powered platform designed to demystify the Indian justice system, making legal knowledge accessible and understandable for everyone. By leveraging advanced AI tools, it provides plain language explanations, personalized guidance, and real-time legal assistance, empowering citizens to understand and exercise their rights.
-## ✨ Core Features
-LegalEase offers a suite of powerful tools to simplify your legal journey:
-### 1. AI Legal Chatbot : 
-Get instant, AI-powered answers to your legal questions. The chatbot can be configured with different LLM models (e.g., LLaMA 3 8B Fast, LLaMA 3 70B Powerful) to suit varying needs for speed and depth.
-<img width="1000" height="500" alt="Screenshot 2025-07-23 005313" src="https://github.com/user-attachments/assets/9e7952d4-a2d9-44b2-838f-b387e34cb81f" />
-### 2. Case Tracker :
-Track and manage your legal cases in real-time. Stay updated on statuses, next hearing dates, and key developments. Features include search, filter by status, and sorting options.
-<img width="1000" height="500" alt="Screenshot 2025-07-23 005334" src="https://github.com/user-attachments/assets/2765e469-05bb-4af0-90d0-f10c108f7f81" />
-### 3. Legal Rights Visualizer :
-Explore and understand your legal rights in simple, easy-to-understand language through interactive visualizations. Browse categories like Arrest Rights, Property Rights, Consumer Rights, Employment Rights, and Family Law Rights.
-<img width="1000" height="500" alt="Screenshot 2025-07-23 005350" src="https://github.com/user-attachments/assets/bcf66795-0467-401f-ade1-52fef0361e87" />
-### 4. Document Simplifier :
-Upload complex legal documents (PDF, Word, Text up to 10MB) and receive simplified, plain-language explanations of their content.
-<img width="1000" height="500" alt="Screenshot 2025-07-23 005406" src="https://github.com/user-attachments/assets/d4b18a2e-e635-48fc-9cb8-a9deae2affce" />
-### 5. Find Legal Help :
-Connect with legal aid providers, lawyers, and clinics across India. Search by name, specialization, or location, and filter by state and type of service.
-<img width="1000" height="500" alt="Screenshot 2025-07-23 005420" src="https://github.com/user-attachments/assets/76e2937c-6103-43d5-a23d-0ccd3903c125" />
+LegalAI
+⚖️ Simplifying Legal Access for All Indians
+LegalAI is an AI-powered platform designed to demystify the Indian justice system, making legal knowledge accessible and understandable for everyone. By leveraging cutting-edge artificial intelligence tools, it provides clear language explanations, personalized legal guidance, and real-time assistance, empowering citizens to understand and exercise their legal rights effectively.
 
-## 🛠️ Technologies Used
-LegalEase is built using a modern MERN (MongoDB, Express, React, Node.js) stack with Next.js for the frontend, leveraging various powerful libraries and services :
-### Frontend : 
-- Next.js: React framework for building server-side rendered and statically generated web applications.
-- React: Frontend JavaScript library for building user interfaces.
-- TypeScript: Superset of JavaScript for type safety.
-- Tailwind CSS: Utility-first CSS framework for rapid UI development.
-- Shadcn/ui: Reusable UI components built with Radix UI and Tailwind CSS.
-- OpenAI API: For AI-powered chatbot and document simplification functionalities.
-- Supabase: Used for specific functionalities, potentially for user management or other data storage.
-- react-day-picker: Date picker component.
-- framer-motion: For animations.
-- recharts: For charting (if used in visualizations).
-- pdf-parse & pdfjs-dist: For PDF document processing.
+✨ Core Features
+LegalAI offers a comprehensive suite of intelligent tools to simplify your legal journey:
 
-### Backend :
-- Node.js: JavaScript runtime environment.
-- Express.js: Web application framework for Node.js.
-- MongoDB: NoSQL database for data storage.
-- Mongoose: MongoDB object data modeling (ODM) library for Node.js.
-- bcryptjs: For password hashing.
-- express-session: For session management.
-- cors: Middleware for enabling Cross-Origin Resource Sharing.
-- ts-node-dev: For development server with TypeScript hot-reloading.
-- typescript: For backend type safety.
+1. AI Legal Assistant
+Get instant, AI-powered responses to your legal queries. Our intelligent assistant can be configured with various language models (including LLaMA 3 8B for quick responses and LLaMA 3 70B for complex legal analysis) to match your specific needs for speed and depth of understanding.
+<img width="1000" height="500" alt="LegalAI Chatbot Interface" src="https://github.com/user-attachments/assets/9e7952d4-a2d9-44b2-838f-b387e34cb81f" />
 
-## 🚀 Getting Started
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
-### Prerequisites
-Ensure you have the following installed on your system :
-- Node.js (v18 or higher recommended)
-- npm (comes with Node.js): Or yarn if preferred.
-- Git
-- MongoDB Instance
-- OpenAI API Key: Obtain one from OpenAI Platform.
-- Supabase Project URL & Anon Key: Obtain these from your Supabase Dashboard.
+2. Smart Case Monitor
+Track and manage your legal cases with real-time updates. Stay informed about case statuses, upcoming hearing dates, and important developments. Features include advanced search capabilities, status-based filtering, and multiple sorting options for efficient case management.
+<img width="1000" height="500" alt="LegalAI Case Tracking Dashboard" src="https://github.com/user-attachments/assets/2765e469-05bb-4af0-90d0-f10c108f7f81" />
 
-## Installation & Setup
-1. Clone the Repository :
-```
+3. Interactive Rights Explorer
+Discover and understand your legal rights through intuitive, interactive visualizations. Explore comprehensive categories including Arrest Rights, Property Rights, Consumer Protection, Employment Rights, and Family Law Rights, all presented in simple, accessible language.
+<img width="1000" height="500" alt="LegalAI Rights Visualizer" src="https://github.com/user-attachments/assets/bcf66795-0467-401f-ade1-52fef0361e87" />
+
+4. Document Intelligence
+Upload complex legal documents (supporting PDF, Word, and Text formats up to 10MB) and receive simplified, plain-language explanations of their content, helping you understand complex legal terminology and clauses with ease.
+<img width="1000" height="500" alt="LegalAI Document Simplifier" src="https://github.com/user-attachments/assets/d4b18a2e-e635-48fc-9cb8-a9deae2affce" />
+
+5. Legal Connect Hub
+Connect with verified legal aid providers, experienced lawyers, and legal clinics across India. Search by professional name, area of specialization, or geographic location, with advanced filtering options by state and service type to find the perfect legal assistance.
+<img width="1000" height="500" alt="LegalAI Help Finder" src="https://github.com/user-attachments/assets/76e2937c-6103-43d5-a23d-0ccd3903c125" />
+
+🛠️ Technology Stack
+LegalAI is built on a robust MERN (MongoDB, Express, React, Node.js) architecture with Next.js powering the frontend, enhanced by cutting-edge libraries and AI services:
+
+Frontend Architecture:
+Next.js: Advanced React framework for server-side rendering and static generation
+
+React: Modern JavaScript library for building dynamic user interfaces
+
+TypeScript: Enhanced JavaScript with comprehensive type safety
+
+Tailwind CSS: Utility-first CSS framework for rapid, responsive UI development
+
+Shadcn/ui: Enterprise-grade UI components built on Radix UI and Tailwind CSS
+
+OpenAI API: Advanced AI capabilities for intelligent chatbot and document processing
+
+Supabase: Robust backend services for user management and data storage
+
+react-day-picker: Modern date selection components
+
+framer-motion: Advanced animation library for smooth user interactions
+
+recharts: Comprehensive charting library for data visualization
+
+pdf-parse & pdfjs-dist: Professional PDF document processing capabilities
+
+Backend Infrastructure:
+Node.js: High-performance JavaScript runtime environment
+
+Express.js: Scalable web application framework for Node.js
+
+MongoDB: Flexible NoSQL database for efficient data management
+
+Mongoose: Elegant MongoDB object modeling for Node.js
+
+bcryptjs: Secure password hashing and verification
+
+express-session: Robust session management middleware
+
+cors: Secure Cross-Origin Resource Sharing configuration
+
+ts-node-dev: Development environment with TypeScript hot-reloading
+
+typescript: Full-stack type safety implementation
+
+🚀 Quick Start Guide
+Follow these steps to set up LegalAI on your local development environment:
+
+Prerequisites
+Ensure your system meets the following requirements:
+
+Node.js (version 18 or higher recommended)
+
+npm (included with Node.js) or yarn package manager
+
+Git for version control
+
+MongoDB instance (local or cloud-based)
+
+OpenAI API Key: Available from OpenAI Platform
+
+Supabase Credentials: Project URL and Anonymous Key from Supabase Dashboard
+
+Installation & Configuration
+1. Repository Setup:
+bash
 git clone https://github.com/yashvikram30/legalease.git
 cd legalease
-```
-2. Backend Setup :
-```
+2. Backend Configuration:
+bash
 cd backend
 npm install
-```
-- Create a .env file in the backend directory and add the following environment variables :
-```
+Create a .env file in the backend directory with the following configuration:
+
+text
 MONGO_URI=your_mongodb_connection_string_here
 PORT=5000
-SESSION_SECRET=a_very_long_and_random_string_for_session_secret
-```
-- Replace your_mongodb_connection_string_here with your MongoDB connection string.
-- Replace a_very_long_and_random_string_for_session_secret with a strong, randomly generated string.
-
-- Build the backend TypeScript code :
-```
-npm run build
-```
-3. Frontend Setup :
-- Navigate back to the project root directory.
-- Install frontend dependencies :
-```
-npm install
-```
-- Create a .env.local file in the project root directory and add the following environment variables :
-```
-NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
+SESSION_SECRET=generate_a_secure_random_string_for_session_management
 OPENAI_API_KEY=your_openai_api_key_here
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_public_key_here
-```
-- Replace your_openai_api_key_here with your actual OpenAI API Key.
-- Replace your_supabase_project_url_here and your_supabase_anon_public_key_here with your actual Supabase credentials.
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anonymous_key
+Compile the backend TypeScript code:
 
-### Running the Application
-1. Start the Backend Server from the backend directory :
-```
-npm start
-```
-2. Build and start the Frontend Development Server from the root project directory :
-```
+bash
 npm run build
-npm start
-```
-## 🤝 Contributing
-Contributions are welcome! If you'd like to contribute, please Check out our [Contributing Guidelines](contributing.md).
+3. Frontend Setup:
+Return to the project root directory and install dependencies:
+
+bash
+cd ..
+npm install
+Launch the development environment:
+
+bash
+npm run dev
+LegalAI will now be accessible at http://localhost:3000 with the backend running on http://localhost:5000.
+
+🎯 Key Benefits
+Democratized Legal Access: Making complex legal information accessible to all citizens
+
+AI-Powered Insights: Advanced artificial intelligence for accurate legal guidance
+
+Real-time Case Management: Comprehensive tracking of legal proceedings
+
+Document Intelligence: Simplified understanding of complex legal documents
+
+Verified Legal Network: Trusted connections with legal professionals nationwide
+
+LegalAI represents a significant step forward in legal technology, bridging the gap between complex legal systems and everyday citizens through intelligent, accessible technology solutions.
+
 
 
 
