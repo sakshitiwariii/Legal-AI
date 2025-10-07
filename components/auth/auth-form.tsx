@@ -94,9 +94,9 @@ export function AuthForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl">Welcome to LegalEase</CardTitle>
-        <CardDescription>Sign in to access all features or create a new account</CardDescription>
-      </CardHeader>
+      <CardTitle className="text-2xl">Welcome to LegalAI</CardTitle>
+            <CardDescription>Sign in to access all features or create a new account</CardDescription>
+          </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "signin" | "signup")}>
           <TabsList className="grid w-full grid-cols-2 mb-6">

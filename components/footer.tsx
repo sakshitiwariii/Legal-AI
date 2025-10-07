@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-navy-900 dark:text-white">
-              Legal<span className="text-teal-600 dark:text-teal-400">Ease</span>
+              LegalAI
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Simplifying legal access for all Indians through AI-powered tools and plain language explanations.
@@ -170,7 +170,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t dark:border-slate-800 text-center">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            © {new Date().getFullYear()} LegalEase. All rights reserved.
+            © {new Date().getFullYear()} LegalAI. All rights reserved.
           </p>
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
             Disclaimer: The information provided on this platform is for general informational purposes only and does

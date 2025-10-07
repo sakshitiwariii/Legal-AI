@@ -5,9 +5,9 @@ import { Analytics } from "@vercel/analytics/next"
 
 
 export const metadata: Metadata = {
-  title: "LegalEase - Simplifying Legal Access for All",
+  title: "LegalAI - Simplifying Legal Access for All",
   description:
-    "LegalEase makes the justice system accessible through AI-powered tools, plain language explanations, and personalized guidance.",
+    "LegalAI makes the justice system accessible through AI-powered tools, plain language explanations, and personalized guidance.",
     generator: 'v0.dev'
 }
 

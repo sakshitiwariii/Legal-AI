@@ -53,7 +53,7 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <span className="text-2xl font-bold text-navy-900 dark:text-white">
-                Legal<span className="text-teal-600 dark:text-teal-400">Ease</span>
+                Legal<span className="text-teal-600 dark:text-teal-400">AI</span>
               </span>
             </Link>
           </div>

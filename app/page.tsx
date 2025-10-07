@@ -72,7 +72,7 @@ export default function LandingPage() {
                   Simplifying Legal Access for All Indians
                 </h1>
                 <p className="max-w-[600px] text-slate-700 md:text-xl dark:text-slate-300">
-                  LegalEase makes the justice system accessible through AI-powered tools, plain language explanations,
+                  LEgalAi makes the justice system accessible through AI-powered tools, plain language explanations,
                   and personalized guidance.
                 </p>
               </div>
@@ -116,10 +116,10 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl text-navy-900 dark:text-white">Our Mission</h2>
+              <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl text-navy-900 dark:text-white">Our Mission</h2>
             <p className="text-slate-700 md:text-xl dark:text-slate-300">
               We believe that legal knowledge should be accessible to everyone, not just those who can afford expensive
-              lawyers. LegalEase uses AI and plain language to demystify the legal system, empowering citizens to
+              lawyers. LEgalAi uses AI and plain language to demystify the legal system, empowering citizens to
               understand and exercise their rights.
             </p>
           </motion.div>
@@ -176,7 +176,7 @@ export default function LandingPage() {
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-navy-900 dark:text-white">What Our Users Say</h2>
               <p className="max-w-[700px] text-slate-700 md:text-xl dark:text-slate-300">
-                Real stories from people who have used LegalEase to navigate their legal challenges
+                Real stories from people who have used LEgalAi to navigate their legal challenges
               </p>
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function LandingPage() {
                 Ready to Simplify Your Legal Journey?
               </h2>
               <p className="max-w-[700px] text-slate-700 md:text-xl dark:text-slate-300">
-                Join thousands of Indians who are using LegalEase to understand their rights and navigate the legal
+                Join thousands of Indians who are using LEgalAi to understand their rights and navigate the legal
                 system with confidence.
               </p>
             </div>

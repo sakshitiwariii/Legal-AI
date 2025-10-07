@@ -241,8 +241,8 @@ export default function RightsPage() {
   const handleShare = (text: string) => {
     if (navigator.share) {
       navigator
-        .share({
-          title: "Legal Rights Information from LegalEase",
+      .share({
+        title: "Legal Rights Information from LEgalAi",
           text: text,
           url: window.location.href,
         })

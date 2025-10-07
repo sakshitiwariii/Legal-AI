@@ -3,6 +3,7 @@
 
 LegalAI is an AI-powered platform designed to demystify the Indian justice system, making legal knowledge accessible and understandable for everyone. By leveraging cutting-edge artificial intelligence tools, it provides clear language explanations, personalized legal guidance, and real-time assistance, empowering citizens to understand and exercise their legal rights effectively.
 
+<<<<<<< HEAD
 ## **✨ Core Features**
 
 LegalAI offers a comprehensive suite of intelligent tools to simplify your legal journey:
@@ -38,89 +39,41 @@ LegalAI is built on a robust MERN (MongoDB, Express, React, Node.js) architectur
 
 ### **Frontend Architecture:**
 - **Next.js**: Advanced React framework for server-side rendering and static generation
-- **React**: Modern JavaScript library for building dynamic user interfaces
-- **TypeScript**: Enhanced JavaScript with comprehensive type safety
-- **Tailwind CSS**: Utility-first CSS framework for rapid, responsive UI development
-- **Shadcn/ui**: Enterprise-grade UI components built on Radix UI and Tailwind CSS
-- **OpenAI API**: Advanced AI capabilities for intelligent chatbot and document processing
-- **Supabase**: Robust backend services for user management and data storage
-- **react-day-picker**: Modern date selection components
-- **framer-motion**: Advanced animation library for smooth user interactions
-- **recharts**: Comprehensive charting library for data visualization
-- **pdf-parse & pdfjs-dist**: Professional PDF document processing capabilities
+# LegalAI
 
-### **Backend Infrastructure:**
-- **Node.js**: High-performance JavaScript runtime environment
-- **Express.js**: Scalable web application framework for Node.js
-- **MongoDB**: Flexible NoSQL database for efficient data management
-- **Mongoose**: Elegant MongoDB object modeling for Node.js
-- **bcryptjs**: Secure password hashing and verification
-- **express-session**: Robust session management middleware
-- **cors**: Secure Cross-Origin Resource Sharing configuration
-- **ts-node-dev**: Development environment with TypeScript hot-reloading
-- **typescript**: Full-stack type safety implementation
+LegalAI is a cleaned import of a Next.js + Node project focused on making legal information more accessible using AI-powered tools.
 
-## **🚀 Quick Start Guide**
+This repository contains a single initial import commit. The original commit history and author metadata were intentionally removed during the import.
 
-Follow these steps to set up LegalAI on your local development environment:
+Quick start (frontend)
 
-### **Prerequisites**
-Ensure your system meets the following requirements:
-- **Node.js** (version 18 or higher recommended)
-- **npm** (included with Node.js) or **yarn** package manager
-- **Git** for version control
-- **MongoDB** instance (local or cloud-based)
-- **OpenAI API Key**: Available from OpenAI Platform
-- **Supabase Credentials**: Project URL and Anonymous Key from Supabase Dashboard
+1. Install dependencies:
 
-## **Installation & Configuration**
-
-### **1. Repository Setup:**
-```bash
-git clone https://github.com/sakshitiwariii/Legal-AI.git
-cd Legal-AI
-```
-
-### **2. Backend Configuration:**
-```bash
-cd backend
+```powershell
+cd C:\D\Legal AI\legalease-clean
 npm install
 ```
 
-Create a `.env` file in the backend directory with the following configuration:
+2. Create a local env file (`.env.local`) and set required variables (example):
+
 ```
-MONGO_URI=your_mongodb_connection_string_here
-PORT=5000
-SESSION_SECRET=generate_a_secure_random_string_for_session_management
-OPENAI_API_KEY=your_openai_api_key_here
-SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anonymous_key
+OPENAI_API_KEY=your_openai_key
+MONGO_URL=mongodb://127.0.0.1:27017/legalai
+NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_SECRET=replace_with_a_secure_secret
 ```
 
-Compile the backend TypeScript code:
-```bash
-npm run build
-```
+3. Run the dev server:
 
-### **3. Frontend Setup:**
-Return to the project root directory and install dependencies:
-```bash
-cd ..
-npm install
-```
-
-Launch the development environment:
-```bash
+```powershell
 npm run dev
 ```
 
-LegalAI will now be accessible at `http://localhost:3000` with the backend running on `http://localhost:5000`.
+The app will be available at http://localhost:3001 (or the port printed by Next).
 
-## **🎯 Key Benefits**
-- **Democratized Legal Access**: Making complex legal information accessible to all citizens
-- **AI-Powered Insights**: Advanced artificial intelligence for accurate legal guidance
-- **Real-time Case Management**: Comprehensive tracking of legal proceedings
-- **Document Intelligence**: Simplified understanding of complex legal documents
-- **Verified Legal Network**: Trusted connections with legal professionals nationwide
+Notes
+- This project requires environment variables for OpenAI, MongoDB, and NextAuth to enable full functionality. Without them, some API routes will return errors in dev (this is expected).
+- Recommended deployment: Vercel (first-class Next.js support). You can also use Render or Netlify with appropriate configuration.
 
-LegalAI represents a significant step forward in legal technology, bridging the gap between complex legal systems and everyday citizens through intelligent, accessible technology solutions.
+If you'd like, I can finish the rebase and push these changes for you.
+### **1. Repository Setup:**
