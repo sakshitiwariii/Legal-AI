@@ -50,7 +50,7 @@ Quick start (frontend)
 1. Install dependencies:
 
 ```powershell
-cd C:\D\Legal AI\legalease-clean
+cd C:\D\Legal AI\legal-AI-clean
 npm install
 ```
 
