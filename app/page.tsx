@@ -1,114 +1,67 @@
 "use client"
 
-import { ArrowRight, Check, MessageSquare, Scale, Search } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { TestimonialCard } from "@/components/testimonial-card"
-
-export default function LandingPage() {
-  const features = [
-    {
-      icon: <MessageSquare className="h-10 w-10 text-blue-600 dark:text-blue-400" />,
-      title: "AI Legal Chatbot",
-      description: "Get instant answers to your legal questions from our AI-powered chatbot.",
-      link: "/chat",
-    },
-    {
-      icon: <Search className="h-10 w-10 text-blue-600 dark:text-blue-400" />,
-      title: "Case Tracker",
-      description: "Track your legal cases in real-time with updates on status and next steps.",
-      link: "/dashboard",
-    },
-    {
-      icon: <Scale className="h-10 w-10 text-blue-600 dark:text-blue-400" />,
-      title: "Legal Rights Visualizer",
-      description: "Understand your legal rights in simple language with interactive visualizations.",
-      link: "/rights",
-    },
-  ]
-
-  const testimonials = [
-    {
-      name: "Priya Sharma",
-      role: "Small Business Owner",
-      content:
-        "LegalEase helped me understand my rights as a business owner without expensive legal consultations. The AI chatbot answered all my questions clearly.",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      name: "Rahul Patel",
-      role: "Tenant",
-      content:
-        "I was having issues with my landlord and didn't know my rights. The Rights Visualizer made everything clear, and I was able to resolve my dispute quickly.",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      name: "Ananya Desai",
-      role: "Student",
-      content:
-        "As a law student, I find LegalEase incredibly useful for research. The platform simplifies complex legal concepts and makes them accessible to everyone.",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-  ]
-
+export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950">
-      {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-            <motion.div
-              className="flex flex-col justify-center space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-navy-900 dark:text-white">
-                  Simplifying Legal Access for All Indians
-                </h1>
-                <p className="max-w-[600px] text-slate-700 md:text-xl dark:text-slate-300">
-                  LEgalAi makes the justice system accessible through AI-powered tools, plain language explanations,
-                  and personalized guidance.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button asChild size="lg" className="bg-teal-600 hover:bg-teal-700 text-white">
-                  <Link href="/chat">
-                    Get Started Free
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="dark:border-slate-600 dark:text-slate-300">
-                  <Link href="/help">Find Legal Help</Link>
-                </Button>
-              </div>
-            </motion.div>
-            <motion.div
-              className="mx-auto lg:mx-0 relative"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Image
-                src="/image.png?height=500&width=500"
-                width={500}
-                height={500}
-                alt="Legal assistance illustration"
-                className="rounded-2xl"
-              />
-            </motion.div>
-          </div>
+    <div className="page active" id="page-home">
+      <div className="hero">
+        <div className="hero-badge">⚖️ Powered by AI · Built for India</div>
+        <h1>Your Intelligent Legal<br/>Companion</h1>
+        <p>Navigate the Indian legal system with confidence. From constitutional rights to case tracking — AI-powered, plain-English answers at your fingertips.</p>
+        <div className="hero-btns">
+          <Link href="/chat" className="btn-gold">Ask Legal AI →</Link>
+          <Link href="/rights" className="btn-outline">Know Your Rights</Link>
         </div>
-      </section>
+      </div>
 
-      {/* Mission Statement */}
-      <section className="w-full py-12 md:py-16 bg-white dark:bg-slate-950">
-        <div className="container px-4 md:px-6">
+      <div className="stats-row">
+        <div className="stat-card"><div className="stat-num">50K+</div><div className="stat-label">Queries Answered</div></div>
+        <div className="stat-card"><div className="stat-num">1,200+</div><div className="stat-label">Cases Tracked</div></div>
+        <div className="stat-card"><div className="stat-num">340+</div><div className="stat-label">Legal Professionals</div></div>
+        <div className="stat-card"><div className="stat-num">28</div><div className="stat-label">States Covered</div></div>
+      </div>
+
+      <div className="features-grid">
+        <Link href="/chat" className="feature-card">
+          <div className="fc-icon">🤖</div>
+          <div className="fc-title">AI Legal Chatbot</div>
+          <div className="fc-desc">RAG-powered chatbot trained on Indian legal documents. Get instant answers with citations.</div>
+        </Link>
+        <Link href="/dashboard" className="feature-card">
+          <div className="fc-icon">📋</div>
+          <div className="fc-title">Case Tracker</div>
+          <div className="fc-desc">Monitor your cases, hearing dates, and progress across all courts in one dashboard.</div>
+        </Link>
+        <Link href="/rights" className="feature-card">
+          <div className="fc-icon">🏛️</div>
+          <div className="fc-title">Rights Visualizer</div>
+          <div className="fc-desc">Explore Fundamental Rights, CrPC sections, and consumer protections with law references.</div>
+        </Link>
+        <Link href="/simplify" className="feature-card">
+          <div className="fc-icon">📄</div>
+          <div className="fc-title">Doc Simplifier</div>
+          <div className="fc-desc">Upload legal documents and get plain-English summaries with key points extracted.</div>
+        </Link>
+        <Link href="/help" className="feature-card">
+          <div className="fc-icon">🔍</div>
+          <div className="fc-title">Find Legal Help</div>
+          <div className="fc-desc">Directory of verified lawyers and NGOs across India. Filter by state and specialization.</div>
+        </Link>
+      </div>
+
+      <div className="card" style={{marginTop:'1rem',background:'linear-gradient(135deg,rgba(201,168,76,.06),rgba(74,128,212,.04))',borderColor:'rgba(201,168,76,.2)'}}>
+        <div style={{display:'grid',gridTemplateColumns:'1fr auto',gap:'1.5rem',alignItems:'center'}}>
+          <div>
+            <h3 style={{fontFamily:'var(--serif)',fontSize:'1.2rem',color:'var(--gold2)',marginBottom:'.5rem'}}>⚠️ Important Disclaimer</h3>
+            <p style={{fontSize:'.85rem',color:'var(--text2)',lineHeight:'1.7'}}>Legal AI provides general legal information for educational purposes only. This is not legal advice and does not create an attorney-client relationship. For specific legal matters, please consult a qualified legal professional.</p>
+          </div>
+          <div style={{fontSize:'2.5rem',opacity:'.4'}}>⚖️</div>
+        </div>
+      </div>
+    </div>
+  )
+}
           <motion.div
             className="mx-auto text-center space-y-4 max-w-[800px]"
             initial={{ opacity: 0, y: 20 }}

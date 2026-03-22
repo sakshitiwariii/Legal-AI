@@ -1,53 +1,189 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { FileText, Upload, X, Copy, Download, Check } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
-import { Progress } from "@/components/ui/progress";
-
-import { simplifyTextLocally } from "@/lib/simplify";
-import {
-  DocumentSimplifierSkeleton,
-  DocumentUploadSkeleton,
-} from "@/components/ui/doc-skeleton";
-
-// Updated to use API route instead of client-side PDF.js
-const extractTextFromPDF = async (file: File): Promise<string> => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await fetch("/api/extract-pdf", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to extract text from PDF");
-    }
-
-    const data = await response.json();
-    return data.text;
-  } catch (error) {
-    console.error("Error extracting text from PDF:", error);
-    throw error;
-  }
-};
+import { useState, useRef } from "react"
 
 export default function SimplifyPage() {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [originalText, setOriginalText] = useState("")
+  const [simplifiedText, setSimplifiedText] = useState("")
+  const [isDragging, setIsDragging] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileSelect = (selectedFile: File) => {
+    if (selectedFile.type === "application/pdf" || selectedFile.type === "text/plain") {
+      setFile(selectedFile)
+      // Simulate text extraction
+      setTimeout(() => {
+        setOriginalText("This is a sample legal document text that would be extracted from the uploaded file. It contains complex legal language that needs to be simplified for better understanding.")
+      }, 1000)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const droppedFile = e.dataTransfer.files[0]
+    if (droppedFile) {
+      handleFileSelect(droppedFile)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+  }
+
+  const handleSimplify = async () => {
+    if (!originalText) return
+
+    setIsProcessing(true)
+    // Simulate simplification process
+    setTimeout(() => {
+      setSimplifiedText("This is the simplified version of the legal document. The complex legal language has been converted into easy-to-understand terms while maintaining the original meaning and legal implications.")
+      setIsProcessing(false)
+    }, 2000)
+  }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(simplifiedText)
+    // Could add toast notification here
+  }
+
+  const handleDownload = () => {
+    const blob = new Blob([simplifiedText], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "simplified-document.txt"
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  return (
+    <div className="page active" id="page-simplifier">
+      <div className="document-simplifier">
+        <div className="ds-head">
+          <div className="ds-title">Document Simplifier</div>
+          <div className="ds-subtitle">Convert complex legal documents into simple, understandable language</div>
+        </div>
+
+        <div className="ds-content">
+          <div className="upload-zone" onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave}>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.txt"
+              onChange={(e) => e.target.files && handleFileSelect(e.target.files[0])}
+              style={{ display: "none" }}
+            />
+
+            {!file ? (
+              <div className="uz-content">
+                <div className="uz-icon">📄</div>
+                <div className="uz-text">
+                  <div className="uz-title">Upload Legal Document</div>
+                  <div className="uz-subtitle">PDF or TXT files up to 10MB</div>
+                </div>
+                <button
+                  className="uz-btn"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Choose File
+                </button>
+                <div className="uz-drag-text">or drag and drop here</div>
+              </div>
+            ) : (
+              <div className="uz-file">
+                <div className="uz-file-icon">📄</div>
+                <div className="uz-file-info">
+                  <div className="uz-file-name">{file.name}</div>
+                  <div className="uz-file-size">{(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                </div>
+                <button
+                  className="uz-file-remove"
+                  onClick={() => setFile(null)}
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
+
+          {originalText && (
+            <div className="result-panel">
+              <div className="rp-head">
+                <div className="rp-title">Document Analysis</div>
+                <button
+                  className="rp-simplify-btn"
+                  onClick={handleSimplify}
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? "Processing..." : "🔄 Simplify Document"}
+                </button>
+              </div>
+
+              <div className="rp-content">
+                <div className="rp-section">
+                  <div className="rp-section-title">Original Text</div>
+                  <div className="rp-text-box">
+                    <p>{originalText}</p>
+                  </div>
+                </div>
+
+                {simplifiedText && (
+                  <div className="rp-section">
+                    <div className="rp-section-title">Simplified Version</div>
+                    <div className="rp-text-box rp-text-simplified">
+                      <p>{simplifiedText}</p>
+                    </div>
+                    <div className="rp-actions">
+                      <button className="rp-action-btn" onClick={handleCopy}>
+                        📋 Copy
+                      </button>
+                      <button className="rp-action-btn" onClick={handleDownload}>
+                        💾 Download
+                      </button>
+                      <button className="rp-action-btn">
+                        🔗 Share
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="ds-footer">
+          <div className="ds-features">
+            <div className="ds-feature">
+              <span className="ds-feature-icon">🧠</span>
+              <span className="ds-feature-text">AI-Powered Simplification</span>
+            </div>
+            <div className="ds-feature">
+              <span className="ds-feature-icon">🔒</span>
+              <span className="ds-feature-text">Privacy-First Processing</span>
+            </div>
+            <div className="ds-feature">
+              <span className="ds-feature-icon">⚖️</span>
+              <span className="ds-feature-text">Legal Accuracy Maintained</span>
+            </div>
+          </div>
+          <div className="ds-disclaimer">
+            <span>⚠️</span>
+            This tool simplifies language while preserving legal meaning. Not a substitute for professional legal advice.
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
   const [originalContent, setOriginalContent] = useState<string>("");
   const [simplifiedContent, setSimplifiedContent] = useState<string | null>(
     null

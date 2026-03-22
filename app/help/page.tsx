@@ -1,18 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { MapPin, Phone, Mail, Star, Filter, Search } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-type LegalHelp = {
+type Lawyer = {
   id: string
   name: string
   type: "NGO" | "Lawyer" | "Clinic" | "Government"
@@ -26,6 +16,259 @@ type LegalHelp = {
     email?: string
     website?: string
   }
+  availability: string
+  image?: string
+  experience: string
+  cases: number
+}
+
+export default function HelpPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [stateFilter, setStateFilter] = useState("all")
+  const [typeFilter, setTypeFilter] = useState("all")
+  const [specializationFilter, setSpecializationFilter] = useState("all")
+
+  const lawyers: Lawyer[] = [
+    {
+      id: "1",
+      name: "Adv. Priya Sharma",
+      type: "Lawyer",
+      specialization: ["Criminal Law", "Family Law", "Property Law"],
+      location: "New Delhi",
+      state: "Delhi",
+      languages: ["Hindi", "English", "Punjabi"],
+      rating: 4.8,
+      contact: {
+        phone: "+91-9876543210",
+        email: "priya.sharma@lawfirm.com"
+      },
+      availability: "Mon-Fri 9AM-6PM",
+      experience: "12 years",
+      cases: 450
+    },
+    {
+      id: "2",
+      name: "Legal Aid Society Delhi",
+      type: "NGO",
+      specialization: ["Human Rights", "Women's Rights", "Criminal Defense"],
+      location: "Connaught Place, Delhi",
+      state: "Delhi",
+      languages: ["Hindi", "English", "Urdu"],
+      rating: 4.6,
+      contact: {
+        phone: "+91-1122334455",
+        email: "help@lasdelhi.org",
+        website: "lasdelhi.org"
+      },
+      availability: "Mon-Sat 10AM-5PM",
+      experience: "15 years",
+      cases: 1200
+    },
+    {
+      id: "3",
+      name: "Adv. Rajesh Kumar",
+      type: "Lawyer",
+      specialization: ["Corporate Law", "Tax Law", "Civil Law"],
+      location: "Mumbai",
+      state: "Maharashtra",
+      languages: ["English", "Hindi", "Marathi"],
+      rating: 4.9,
+      contact: {
+        phone: "+91-9988776655",
+        email: "rajesh.kumar@corporate.in"
+      },
+      availability: "Mon-Fri 10AM-7PM",
+      experience: "18 years",
+      cases: 320
+    }
+  ]
+
+  const filteredLawyers = lawyers.filter(lawyer => {
+    const matchesSearch = lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         lawyer.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         lawyer.specialization.some(spec => spec.toLowerCase().includes(searchQuery.toLowerCase()))
+
+    const matchesState = stateFilter === "all" || lawyer.state === stateFilter
+    const matchesType = typeFilter === "all" || lawyer.type === typeFilter
+    const matchesSpecialization = specializationFilter === "all" ||
+                                 lawyer.specialization.some(spec => spec.toLowerCase().includes(specializationFilter.toLowerCase()))
+
+    return matchesSearch && matchesState && matchesType && matchesSpecialization
+  })
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "Lawyer": return "var(--blue)"
+      case "NGO": return "var(--green)"
+      case "Clinic": return "var(--gold)"
+      case "Government": return "var(--purple)"
+      default: return "var(--text3)"
+    }
+  }
+
+  const renderStars = (rating: number) => {
+    return "★".repeat(Math.floor(rating)) + "☆".repeat(5 - Math.floor(rating))
+  }
+
+  return (
+    <div className="page active" id="page-help">
+      <div className="legal-help-finder">
+        <div className="lhf-head">
+          <div className="lhf-title">Legal Help Finder</div>
+          <div className="lhf-subtitle">Connect with qualified legal professionals and support organizations</div>
+        </div>
+
+        <div className="lawyers-controls">
+          <div className="lc-search">
+            <input
+              type="text"
+              className="lc-search-input"
+              placeholder="Search by name, location, or specialization..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button className="lc-search-btn">🔍</button>
+          </div>
+
+          <div className="lc-filters">
+            <select
+              className="lc-filter"
+              value={stateFilter}
+              onChange={(e) => setStateFilter(e.target.value)}
+            >
+              <option value="all">All States</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+            </select>
+
+            <select
+              className="lc-filter"
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+            >
+              <option value="all">All Types</option>
+              <option value="Lawyer">Lawyer</option>
+              <option value="NGO">NGO</option>
+              <option value="Clinic">Legal Clinic</option>
+              <option value="Government">Government</option>
+            </select>
+
+            <select
+              className="lc-filter"
+              value={specializationFilter}
+              onChange={(e) => setSpecializationFilter(e.target.value)}
+            >
+              <option value="all">All Specializations</option>
+              <option value="Criminal Law">Criminal Law</option>
+              <option value="Family Law">Family Law</option>
+              <option value="Property Law">Property Law</option>
+              <option value="Corporate Law">Corporate Law</option>
+              <option value="Human Rights">Human Rights</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="lawyers-grid">
+          {filteredLawyers.map((lawyer) => (
+            <div key={lawyer.id} className="lawyer-card">
+              <div className="lc-head">
+                <div className="lc-avatar">
+                  <div className="lc-avatar-img">
+                    {lawyer.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                </div>
+                <div className="lc-info">
+                  <div className="lc-name">{lawyer.name}</div>
+                  <div className="lc-type" style={{backgroundColor: getTypeColor(lawyer.type)}}>
+                    {lawyer.type}
+                  </div>
+                </div>
+              </div>
+
+              <div className="lc-body">
+                <div className="lc-specialization">
+                  {lawyer.specialization.slice(0, 2).map((spec, i) => (
+                    <span key={i} className="lc-spec-tag">{spec}</span>
+                  ))}
+                  {lawyer.specialization.length > 2 && (
+                    <span className="lc-spec-more">+{lawyer.specialization.length - 2} more</span>
+                  )}
+                </div>
+
+                <div className="lc-location">
+                  📍 {lawyer.location}, {lawyer.state}
+                </div>
+
+                <div className="lc-languages">
+                  🗣️ {lawyer.languages.join(", ")}
+                </div>
+
+                <div className="lc-rating">
+                  <span className="lc-stars">{renderStars(lawyer.rating)}</span>
+                  <span className="lc-rating-num">{lawyer.rating}</span>
+                </div>
+
+                <div className="lc-stats">
+                  <div className="lc-stat">
+                    <span className="lc-stat-num">{lawyer.experience}</span>
+                    <span className="lc-stat-label">Experience</span>
+                  </div>
+                  <div className="lc-stat">
+                    <span className="lc-stat-num">{lawyer.cases}</span>
+                    <span className="lc-stat-label">Cases</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lc-actions">
+                <button className="lc-action-btn lc-action-primary">
+                  📞 Contact
+                </button>
+                <button className="lc-action-btn">
+                  📅 Book Appointment
+                </button>
+                <button className="lc-action-btn">
+                  ⭐ Rate & Review
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredLawyers.length === 0 && (
+          <div className="no-results">
+            <div className="nr-icon">🔍</div>
+            <div className="nr-text">No legal professionals found matching your criteria.</div>
+            <div className="nr-suggestion">Try adjusting your search filters or location.</div>
+          </div>
+        )}
+
+        <div className="lhf-footer">
+          <div className="lhf-stats">
+            <div className="lhf-stat">
+              <span className="lhf-stat-num">{lawyers.length}</span>
+              <span className="lhf-stat-label">Legal Professionals</span>
+            </div>
+            <div className="lhf-stat">
+              <span className="lhf-stat-num">15+</span>
+              <span className="lhf-stat-label">States Covered</span>
+            </div>
+            <div className="lhf-stat">
+              <span className="lhf-stat-num">24/7</span>
+              <span className="lhf-stat-label">Emergency Support</span>
+            </div>
+          </div>
+          <div className="lhf-disclaimer">
+            <span>⚠️</span>
+            This directory is for informational purposes. Always verify credentials and conduct due diligence before engaging legal services.
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
   availability: string
   image?: string
 }

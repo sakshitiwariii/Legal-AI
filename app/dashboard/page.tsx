@@ -1,36 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { Calendar, Filter, Search, SortAsc, SortDesc } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CaseTimeline } from "@/components/case-timeline"
 
 type Case = {
   id: string
   caseNumber: string
   court: string
   type: string
-  stage: "Filed" | "Hearing" | "Evidence" | "Arguments" | "Judgment" | "Closed"
-  status: "Active" | "Pending" | "Delayed" | "Completed"
+  stage: string
+  status: string
   progress: number
   lastUpdated: string
   nextHearing?: string
+  petitioner: string
+  respondent: string
 }
 
 export default function DashboardPage() {
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
-  const [filterStatus, setFilterStatus] = useState<string>("all")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCase, setSelectedCase] = useState<Case | null>(null)
-
-  // Mock data for cases
-  const cases: Case[] = [
+  const [cases, setCases] = useState<Case[]>([
     {
       id: "1",
       caseNumber: "CWP-1234/2023",
@@ -41,6 +28,8 @@ export default function DashboardPage() {
       progress: 40,
       lastUpdated: "2023-11-15",
       nextHearing: "2023-12-10",
+      petitioner: "John Doe",
+      respondent: "State of Delhi"
     },
     {
       id: "2",
@@ -48,14 +37,209 @@ export default function DashboardPage() {
       court: "District Court, Mumbai",
       type: "Criminal Appeal",
       stage: "Evidence",
-      status: "Delayed",
-      progress: 30,
-      lastUpdated: "2023-10-20",
-      nextHearing: "2023-12-15",
-    },
-    {
-      id: "3",
-      caseNumber: "CS-9101/2022",
+      status: "Pending",
+      progress: 25,
+      lastUpdated: "2023-11-12",
+      petitioner: "Jane Smith",
+      respondent: "Mumbai Police"
+    }
+  ])
+
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [newCase, setNewCase] = useState({
+    caseNumber: "",
+    court: "",
+    type: "",
+    petitioner: "",
+    respondent: ""
+  })
+
+  const handleAddCase = () => {
+    if (newCase.caseNumber && newCase.court && newCase.type) {
+      const caseItem: Case = {
+        id: Date.now().toString(),
+        caseNumber: newCase.caseNumber,
+        court: newCase.court,
+        type: newCase.type,
+        stage: "Filed",
+        status: "Active",
+        progress: 10,
+        lastUpdated: new Date().toISOString().split('T')[0],
+        petitioner: newCase.petitioner,
+        respondent: newCase.respondent
+      }
+      setCases(prev => [...prev, caseItem])
+      setNewCase({ caseNumber: "", court: "", type: "", petitioner: "", respondent: "" })
+      setShowAddModal(false)
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Active": return "var(--green)"
+      case "Pending": return "var(--gold)"
+      case "Delayed": return "var(--red)"
+      case "Completed": return "var(--blue)"
+      default: return "var(--text3)"
+    }
+  }
+
+  const getStageIcon = (stage: string) => {
+    switch (stage) {
+      case "Filed": return "📄"
+      case "Hearing": return "⚖️"
+      case "Evidence": return "📋"
+      case "Arguments": return "💬"
+      case "Judgment": return "📜"
+      case "Closed": return "✅"
+      default: return "📝"
+    }
+  }
+
+  return (
+    <div className="page active" id="page-tracker">
+      <div className="tracker-controls">
+        <div className="tc-left">
+          <div className="tc-title">Case Tracker</div>
+          <div className="tc-subtitle">Track your legal cases across Indian courts</div>
+        </div>
+        <div className="tc-right">
+          <button className="tc-btn tc-btn-outline" onClick={() => setShowAddModal(true)}>
+            <span>+</span> Add Case
+          </button>
+          <button className="tc-btn tc-btn-primary">
+            <span>📊</span> Analytics
+          </button>
+        </div>
+      </div>
+
+      <div className="cases-grid">
+        {cases.map((caseItem) => (
+          <div key={caseItem.id} className="case-card">
+            <div className="cc-head">
+              <div className="cc-case-num">{caseItem.caseNumber}</div>
+              <div className="cc-status" style={{backgroundColor: getStatusColor(caseItem.status)}}>
+                {caseItem.status}
+              </div>
+            </div>
+
+            <div className="cc-body">
+              <div className="cc-court">{caseItem.court}</div>
+              <div className="cc-type">{caseItem.type}</div>
+
+              <div className="cc-parties">
+                <div className="cc-party">
+                  <span className="cc-party-label">Petitioner:</span>
+                  <span className="cc-party-name">{caseItem.petitioner}</span>
+                </div>
+                <div className="cc-party">
+                  <span className="cc-party-label">Respondent:</span>
+                  <span className="cc-party-name">{caseItem.respondent}</span>
+                </div>
+              </div>
+
+              <div className="cc-stage">
+                <div className="cc-stage-icon">{getStageIcon(caseItem.stage)}</div>
+                <div className="cc-stage-text">{caseItem.stage}</div>
+              </div>
+
+              <div className="cc-progress">
+                <div className="cc-progress-bar">
+                  <div className="cc-progress-fill" style={{width: `${caseItem.progress}%`}}></div>
+                </div>
+                <div className="cc-progress-pct">{caseItem.progress}%</div>
+              </div>
+
+              <div className="cc-meta">
+                <div className="cc-last-updated">Last updated: {caseItem.lastUpdated}</div>
+                {caseItem.nextHearing && (
+                  <div className="cc-next-hearing">Next hearing: {caseItem.nextHearing}</div>
+                )}
+              </div>
+            </div>
+
+            <div className="cc-actions">
+              <button className="cc-action-btn">📅 Schedule</button>
+              <button className="cc-action-btn">📄 Documents</button>
+              <button className="cc-action-btn">⚙️ Settings</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <div className="modal-title">Add New Case</div>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Case Number *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newCase.caseNumber}
+                  onChange={(e) => setNewCase(prev => ({...prev, caseNumber: e.target.value}))}
+                  placeholder="e.g., CWP-1234/2023"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Court *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newCase.court}
+                  onChange={(e) => setNewCase(prev => ({...prev, court: e.target.value}))}
+                  placeholder="e.g., Delhi High Court"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Case Type *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newCase.type}
+                  onChange={(e) => setNewCase(prev => ({...prev, type: e.target.value}))}
+                  placeholder="e.g., Civil Writ Petition"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Petitioner</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newCase.petitioner}
+                  onChange={(e) => setNewCase(prev => ({...prev, petitioner: e.target.value}))}
+                  placeholder="Petitioner's name"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Respondent</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={newCase.respondent}
+                  onChange={(e) => setNewCase(prev => ({...prev, respondent: e.target.value}))}
+                  placeholder="Respondent's name"
+                />
+              </div>
+            </div>
+            <div className="modal-foot">
+              <button className="modal-btn modal-btn-secondary" onClick={() => setShowAddModal(false)}>
+                Cancel
+              </button>
+              <button className="modal-btn modal-btn-primary" onClick={handleAddCase}>
+                Add Case
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
       court: "Civil Court, Bangalore",
       type: "Civil Suit",
       stage: "Arguments",

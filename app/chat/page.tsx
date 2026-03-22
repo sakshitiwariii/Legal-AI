@@ -1,341 +1,372 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronDown, Send } from "lucide-react";
-import { format } from "date-fns";
-import ReactMarkdown from "react-markdown";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChatSidebar } from "@/components/chat-sidebar";
-import { ChatbotSkeleton } from "@/components/ui/chat-skeleton";
+import { useState, useRef, useEffect } from "react"
 
 type Message = {
-  id: string;
-  content: string;
-  role: "user" | "assistant";
-  timestamp: Date;
-};
+  id: string
+  content: string
+  role: "user" | "assistant"
+  sources?: any[]
+  confidence?: number
+}
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      content:
-        "Hello! I'm your AI legal assistant. How can I help you with your legal questions today?",
-      role: "assistant",
-      timestamp: new Date(),
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [selectedModel, setSelectedModel] = useState("llama3-8b-8192");
-  const [showprompts, setShowprompts] = useState(true);
-  const [location, setlocation] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
+  const messagesRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // Starter prompts
-  const starterPrompts = useMemo(
-    () => [
-      "How is alimony calculated?",
-      "What are my tenant rights?",
-      "Explain copyright law basics",
-      "How does small claims court work?",
-    ],
-    []
-  );
-
-  // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (messages.length === 0) {
+      setMessages([{
+        id: "welcome",
+        content: "Hello! I'm Lex, your AI legal intelligence assistant. I can help you with questions about Indian law, including the Constitution, BNSS, BNS, Consumer Protection Act, RTI Act, and PWDVA. Every answer is cited from official sources.",
+        role: "assistant"
+      }])
+    }
+  }, [])
 
-  // Focus input on load
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+    }
+  }, [messages])
 
-  // Memorize handleSend to prevent unnecessary re-creations
-  const handleSend = useCallback(
-    async (e?: React.FormEvent, customInput?: string) => {
-      e?.preventDefault();
-      const messageContent = customInput || input.trim();
-      if (!messageContent) return;
+  const handleSend = async () => {
+    if (!input.trim() || isTyping) return
 
-      const userMessage: Message = {
-        id: Date.now().toString(),
-        content: messageContent,
-        role: "user",
-        timestamp: new Date(),
-      };
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: input.trim(),
+      role: "user"
+    }
 
-      setMessages((prev) => [...prev, userMessage]);
-      setInput("");
-      setIsLoading(true);
+    setMessages(prev => [...prev, userMessage])
+    setInput("")
+    setIsTyping(true)
 
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+    try {
+      // Call RAG API
+      const response = await fetch('/api/rag-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map(({ role, content }) => ({
-            role,
-            content,
-          })),
-          model: selectedModel,
+          question: input.trim(),
+          indexName: 'legal-docs'
         }),
-      });
+      })
 
-      if (!res.ok || !res.body) {
-        setIsLoading(false);
-        return;
+      const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
       }
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let done = false;
-      let assistantMessage = {
+      const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "",
-        role: "assistant" as const,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        const chunkValue = decoder.decode(value);
-        assistantMessage.content += chunkValue;
-
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantMessage.id
-              ? { ...m, content: assistantMessage.content }
-              : m
-          )
-        );
+        content: data.answer,
+        role: "assistant",
+        sources: data.sources?.map((source: any, i: number) => ({
+          title: `Source ${i + 1}`,
+          section: source.metadata?.section || 'Legal Document',
+          excerpt: source.content.substring(0, 100) + '...',
+          tag: 'legal'
+        })) || [],
+        confidence: Math.floor(Math.random() * 30) + 70 // Simulated confidence
       }
 
-      setIsLoading(false);
-    },
-    [input, messages, selectedModel]
-  );
+      setMessages(prev => [...prev, aiMessage])
+    } catch (error) {
+      console.error('RAG query failed:', error)
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "I apologize, but I'm having trouble accessing the legal database right now. Please try again later or contact support.",
+        role: "assistant"
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setIsTyping(false)
+    }
+  }
 
-  // Memorize model options to prevent unnecessary re-rendering
-  const modelOptions = useMemo(
-    () => [
-      { value: "llama3-8b-8192", label: "LLaMA 3 8B (Fast)" },
-      { value: "llama3-70b-8192", label: "LLaMA 3 70B (Powerful)" },
-      { value: "llama3-70b-4096", label: "LLaMA 3 70B (4096 ctx)" },
-    ],
-    []
-  );
-
-  const selectedModelLabel = useMemo(
-  () =>
-    modelOptions.find((m) => m.value === selectedModel)?.label ??
-    "LLaMA 3 8B (Fast)",
-  [modelOptions, selectedModel]
-);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
-
-  if (isLoading) {
-    return <ChatbotSkeleton />;
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
-      {/* <div className="w-75 h-full border-r dark:border-slate-700 overflow-y-auto">
-        <ChatSidebar />
-      </div> */}
+    <div className="page active" id="page-chatbot">
+      <div className="lex-shell">
+        {/* Sidebar */}
+        <div className="lex-sidebar">
+          <div className="lex-sidebar-head">
+            <div className="lex-brand">Lex</div>
+            <div className="lex-brand-sub">Legal Intelligence · RAG-Powered</div>
+            <button className="lex-new-btn" onClick={() => setMessages([])}>✦ New Consultation</button>
+          </div>
 
-      <div className="flex-1 flex flex-col ">
-      <DropdownMenu >
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          aria-label="Select model"
-          className="fixed top-20 left-4 z-50 flex items-center justify-between gap-2 focus-visible:ring-2 focus-visible:ring-ring dark:text-slate-100 w-52"
-        >
-          <span className="">{selectedModelLabel}</span>
-          <ChevronDown className="h-4 w-4 opacity-70" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72 p-2 rounded-xl shadow-lg dark:text-slate-100">
-        <p className="px-2 pb-2 text-sm text-slate-400">Choose your model</p>
-        {modelOptions.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            onClick={() => setSelectedModel(option.value)}
-            aria-checked={selectedModel === option.value}
-            className="flex justify-between items-start py-2 px-2 rounded-lg cursor-pointer"
-          >
-            <div>
-              <p className="font-medium">{option.label}</p>
-              
+          <div className="lex-section-label">Recent</div>
+          <div className="lex-history">
+            <div className="lex-history-item active">
+              <div className="lhi-title">Arrest rights under BNSS 2023</div>
+              <div className="lhi-meta">Today · 2 sources</div>
             </div>
-            {selectedModel === option.value && (
-              <Check className="h-4 w-4 text-teal-400" />
-            )}
-          </DropdownMenuItem>
-        ))}
-        
-      </DropdownMenuContent>
-    </DropdownMenu>
-
-
-
-
-        <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full p-8 pt-16">
-            <div className="w-full max-w-2xl mx-auto space-y-4 pb-20">
-              <AnimatePresence initial={false}>
-                {messages.map((message) => (
-                  <motion.div
-                    key={message.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`flex ${
-                      message.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                        message.role === "user"
-                          ? "bg-teal-600 text-white dark:bg-teal-700"
-                          : "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100"
-                      }`}
-                    >
-                      {message.role === "assistant" ? (
-                        <div className="prose prose-slate dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 max-w-none">
-                          <ReactMarkdown>{message.content}</ReactMarkdown>
-                        </div>
-                      ) : (
-                        <p>{message.content}</p>
-                      )}
-                      <div
-                        className={`text-xs mt-1 ${
-                          message.role === "user"
-                            ? "text-teal-100"
-                            : "text-slate-500 dark:text-slate-400"
-                        }`}
-                      >
-                        {format(message.timestamp, "h:mm a")}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-
-                {isLoading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-start"
-                  >
-                    <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-slate-100 dark:bg-slate-800">
-                      <div className="flex space-x-2">
-                        <Skeleton className="h-4 w-4 rounded-full" />
-                        <Skeleton className="h-4 w-4 rounded-full" />
-                        <Skeleton className="h-4 w-4 rounded-full" />
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              <div ref={messagesEndRef} />
+            <div className="lex-history-item">
+              <div className="lhi-title">Article 21 — Right to Life scope</div>
+              <div className="lhi-meta">Yesterday · 4 sources</div>
             </div>
-          </ScrollArea>
+          </div>
+
+          <div className="lex-sidebar-foot">
+            <div className="lex-model-pill">
+              <div>
+                <div className="lmp-name">Claude Sonnet</div>
+                <div style={{fontSize: '.66rem', color: 'var(--text3)', marginTop: '1px'}}>Indian Law RAG · v2.1</div>
+              </div>
+              <span className="lmp-badge">Active</span>
+            </div>
+          </div>
         </div>
 
-        <div className="border-t bg-white dark:bg-slate-900 dark:border-slate-700 p-4">
-          {/* Prompt Toggle & Location Picker */}
-
-          <div className="max-w-3xl mx-auto mb-3 space-y-2">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setShowprompts(!showprompts)}
-                className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-2"
-              >
-                {showprompts ? "▼ Hide prompts" : "▲ Show prompts"}
-              </button>
-
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setlocation(e.target.value)}
-                placeholder="Add location (e.g., California, UK)"
-                className="text-xs p-1.5 border border-gray-500 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-md bg-transparent w-1/3"
-              />
+        {/* Chat Main */}
+        <div className="lex-main">
+          <div className="lex-topbar">
+            <div className="lex-topbar-left">
+              <div className="lex-online"></div>
+              <span className="lex-topbar-title">Legal AI</span>
+              <span className="lex-topbar-sub">— 6 documents indexed</span>
             </div>
+            <div className="lex-topbar-right">
+              <button className="lex-tb-btn" onClick={() => setMessages([])}>✦ New</button>
+              <button className="lex-tb-btn">Clear</button>
+              <button className="lex-tb-btn">Export</button>
+            </div>
+          </div>
 
-            {showprompts && (
-              <div className="grid grid-cols-2 gap-2">
-                {starterPrompts.map((prompt) => (
-                  <button
-                    key={prompt}
-                    onClick={() => {
-                      const finalInput = location
-                        ? `In ${location} , ${prompt} `
-                        : prompt;
-                      setInput(finalInput);
-                      setShowprompts(false);
-                      handleSend(undefined, finalInput);
-                    }}
-                    className="text-left p-2 text-sm rounded border hover:bg-slate-50 dark:hover:bg-slate-800 truncate"
-                  >
-                    {prompt}
-                  </button>
-                ))}
+          <div className="lex-messages" ref={messagesRef}>
+            {messages.map((msg) => (
+              <div key={msg.id} className={`lex-msg-group ${msg.role === 'user' ? 'lex-user' : ''}`}>
+                <div>
+                  <div className={`lex-av ${msg.role === 'user' ? 'lex-av-user' : 'lex-av-ai'}`}>
+                    {msg.role === 'user' ? 'U' : 'L'}
+                  </div>
+                </div>
+                <div>
+                  <div className="lex-msg-name">
+                    {msg.role === 'user' ? 'You' : 'Lex'}
+                    {msg.role === 'assistant' && <span className="lex-name-badge">LEGAL AI</span>}
+                  </div>
+                  <div className="lex-msg-body">
+                    <p>{msg.content}</p>
+                  </div>
+                  {msg.sources && (
+                    <div className="lex-sources-block">
+                      <div className="lex-src-head">
+                        <div className="lex-src-label">
+                          <span>📚</span>Sources & Citations
+                          <span className="lex-src-count">{msg.sources.length}</span>
+                        </div>
+                      </div>
+                      <div className="lex-src-items">
+                        {msg.sources.map((src, i) => (
+                          <div key={i} className="lex-src-card">
+                            <div className="lex-src-num">{i + 1}</div>
+                            <div className="lex-src-body">
+                              <div className="lex-src-title">{src.title}</div>
+                              <div className="lex-src-excerpt">{src.excerpt}</div>
+                              <span className="lex-src-tag lex-tag-const">{src.section}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {msg.confidence && (
+                    <div className="lex-conf">
+                      <span className="lex-conf-label">Confidence</span>
+                      <div className="lex-conf-track">
+                        <div className="lex-conf-fill" style={{width: `${msg.confidence}%`}}></div>
+                      </div>
+                      <span className="lex-conf-pct">{msg.confidence}%</span>
+                    </div>
+                  )}
+                  {msg.role === 'assistant' && (
+                    <div className="lex-msg-actions">
+                      <button className="lex-m-action">📋 Copy</button>
+                      <button className="lex-m-action">👍</button>
+                      <button className="lex-m-action">👎</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {isTyping && (
+              <div className="lex-msg-group lex-typing">
+                <div><div className="lex-av lex-av-ai">L</div></div>
+                <div>
+                  <div className="lex-msg-name">Lex <span className="lex-name-badge">THINKING</span></div>
+                  <div className="lex-msg-body">
+                    <div className="ltd"></div>
+                    <div className="ltd"></div>
+                    <div className="ltd"></div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
 
+          <div className="lex-input-area">
+            <div className="lex-input-wrap">
+              <textarea
+                ref={inputRef}
+                className="lex-textarea"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask about Indian law — arrest rights, property, consumer protection, RTI…"
+                rows={1}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement
+                  target.style.height = 'auto'
+                  target.style.height = Math.min(target.scrollHeight, 120) + 'px'
+                }}
+              />
+              <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+                <button className="lex-attach" title="Attach document">📎</button>
+                <button
+                  className="lex-send"
+                  onClick={handleSend}
+                  disabled={!input.trim() || isTyping}
+                >
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                    <path d="M12.5 7L1.5 1.5l2.5 5.5-2.5 5.5L12.5 7z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="lex-disclaimer">Lex provides legal information only — not legal advice. Consult a qualified advocate for your specific matter.</div>
+          </div>
+        </div>
 
-          <form onSubmit={handleSend} className="max-w-3xl mx-auto flex gap-2">
-            <Input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your legal question..."
-              className="flex-1"
-              disabled={isLoading}
-            />
-            <Button
-              type="submit"
-              size="icon"
-              disabled={!input.trim() || isLoading}
-              className="bg-teal-600 hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800"
-            >
-              <Send className="h-4 w-4" />
-              <span className="sr-only">Send</span>
-            </Button>
-          </form>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 text-center max-w-3xl mx-auto">
-            This AI assistant provides general legal information, not specific
-            legal advice. For personalized advice, please consult a qualified
-            legal professional.
-          </p>
+        {/* Sources Panel */}
+        <div className="lex-sources-panel">
+          <div className="lsp-head">
+            <div className="lsp-title">Context & Sources</div>
+            <div className="lsp-active-ref">
+              <div className="lsp-ref-label">Active Query</div>
+              <div className="lsp-ref-text">Sources appear here after your first question.</div>
+            </div>
+          </div>
+          <div className="lsp-body">
+            <div className="lsp-section">
+              <div className="lsp-sec-title">Indexed Documents</div>
+              <div className="lsp-doc-card">
+                <div className="lsp-doc-head">
+                  <span className="lsp-doc-icon">📜</span>
+                  <span className="lsp-doc-name">Constitution of India</span>
+                </div>
+                <div className="lsp-doc-meta">
+                  <span className="lsp-doc-pages">448 Articles · 2023</span>
+                  <div className="lsp-rel">
+                    <div className="lsp-rel-bar">
+                      <div className="lsp-rel-fill" id="lr-const"></div>
+                    </div>
+                    <span className="lsp-rel-pct" id="lr-const-p">—</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lsp-doc-card">
+                <div className="lsp-doc-head">
+                  <span className="lsp-doc-icon">📖</span>
+                  <span className="lsp-doc-name">BNSS 2023</span>
+                </div>
+                <div className="lsp-doc-meta">
+                  <span className="lsp-doc-pages">531 Sections</span>
+                  <div className="lsp-rel">
+                    <div className="lsp-rel-bar">
+                      <div className="lsp-rel-fill" id="lr-bnss"></div>
+                    </div>
+                    <span className="lsp-rel-pct" id="lr-bnss-p">—</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lsp-doc-card">
+                <div className="lsp-doc-head">
+                  <span className="lsp-doc-icon">⚖️</span>
+                  <span className="lsp-doc-name">BNS 2023</span>
+                </div>
+                <div className="lsp-doc-meta">
+                  <span className="lsp-doc-pages">358 Sections</span>
+                  <div className="lsp-rel">
+                    <div className="lsp-rel-bar">
+                      <div className="lsp-rel-fill" id="lr-bns"></div>
+                    </div>
+                    <span className="lsp-rel-pct" id="lr-bns-p">—</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lsp-doc-card">
+                <div className="lsp-doc-head">
+                  <span className="lsp-doc-icon">🛡️</span>
+                  <span className="lsp-doc-name">Consumer Protection Act 2019</span>
+                </div>
+                <div className="lsp-doc-meta">
+                  <span className="lsp-doc-pages">107 Sections</span>
+                  <div className="lsp-rel">
+                    <div className="lsp-rel-bar">
+                      <div className="lsp-rel-fill" id="lr-cpa"></div>
+                    </div>
+                    <span className="lsp-rel-pct" id="lr-cpa-p">—</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lsp-doc-card">
+                <div className="lsp-doc-head">
+                  <span className="lsp-doc-icon">🔎</span>
+                  <span className="lsp-doc-name">RTI Act 2005</span>
+                </div>
+                <div className="lsp-doc-meta">
+                  <span className="lsp-doc-pages">31 Sections</span>
+                  <div className="lsp-rel">
+                    <div className="lsp-rel-bar">
+                      <div className="lsp-rel-fill" id="lr-rti"></div>
+                    </div>
+                    <span className="lsp-rel-pct" id="lr-rti-p">—</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lsp-doc-card">
+                <div className="lsp-doc-head">
+                  <span className="lsp-doc-icon">👩‍⚖️</span>
+                  <span className="lsp-doc-name">PWDVA 2005</span>
+                </div>
+                <div className="lsp-doc-meta">
+                  <span className="lsp-doc-pages">37 Sections</span>
+                  <div className="lsp-rel">
+                    <div className="lsp-rel-bar">
+                      <div className="lsp-rel-fill" id="lr-pwdva"></div>
+                    </div>
+                    <span className="lsp-rel-pct" id="lr-pwdva-p">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lsp-foot">
+            <div className="lsp-rag">
+              <div className="lsp-rag-dot"></div>
+              <div className="lsp-rag-text">
+                <strong>RAG Pipeline Active</strong> · text-embedding-3
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

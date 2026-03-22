@@ -1,53 +1,229 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Copy, Share2 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { toast } from "@/components/ui/use-toast";
-import { RightsVisualizerSkeleton } from "@/components/ui/rights-skeleton";
-
-type RightCategory = {
-  id: string;
-  title: string;
-  description: string;
-  rights: Right[];
-};
+import { useState } from "react"
 
 type Right = {
-  id: string;
-  title: string;
-  content: string;
-};
+  id: string
+  title: string
+  content: string
+  section?: string
+}
+
+type Category = {
+  id: string
+  title: string
+  description: string
+  rights: Right[]
+}
 
 export default function RightsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("arrest");
-  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("arrest")
+  const [expandedItems, setExpandedItems] = useState<string[]>([])
 
-  const categories: RightCategory[] = [
+  const categories: Category[] = [
     {
       id: "arrest",
       title: "Arrest Rights",
-      description:
-        "Your rights when interacting with law enforcement or during arrest",
+      description: "Your rights when interacting with law enforcement or during arrest",
       rights: [
         {
           id: "arrest-1",
+          title: "Right to be informed of grounds of arrest",
+          content: "Under Section 50 of CrPC (now Section 35 of BNSS), you have the right to be informed of the grounds of your arrest at the time of arrest or as soon as possible thereafter.",
+          section: "BNSS Section 35"
+        },
+        {
+          id: "arrest-2",
+          title: "Right to consult a lawyer",
+          content: "You have the right to consult a legal practitioner of your choice. If you cannot afford one, you are entitled to free legal aid under Section 304 CrPC.",
+          section: "CrPC Section 304"
+        },
+        {
+          id: "arrest-3",
+          title: "Right to remain silent",
+          content: "You have the right to remain silent and cannot be compelled to make any statement that may be used against you in court.",
+          section: "Article 20(3)"
+        }
+      ]
+    },
+    {
+      id: "consumer",
+      title: "Consumer Rights",
+      description: "Your rights as a consumer under the Consumer Protection Act 2019",
+      rights: [
+        {
+          id: "consumer-1",
+          title: "Right to safety",
+          content: "Right to be protected against the marketing of goods and services which are hazardous to life and property.",
+          section: "CPA Section 6"
+        },
+        {
+          id: "consumer-2",
+          title: "Right to be informed",
+          content: "Right to be informed about the quality, quantity, potency, purity, standard and price of goods or services.",
+          section: "CPA Section 6"
+        },
+        {
+          id: "consumer-3",
+          title: "Right to choose",
+          content: "Right to be assured, wherever possible, access to a variety of goods and services at competitive prices.",
+          section: "CPA Section 6"
+        }
+      ]
+    },
+    {
+      id: "property",
+      title: "Property Rights",
+      description: "Your rights regarding property ownership and transactions",
+      rights: [
+        {
+          id: "property-1",
+          title: "Right to property",
+          content: "No person shall be deprived of his property save by authority of law. This right is now a legal right under Article 300A.",
+          section: "Article 300A"
+        },
+        {
+          id: "property-2",
+          title: "Protection against arbitrary acquisition",
+          content: "The state cannot acquire your property without following due process and providing adequate compensation.",
+          section: "Article 300A"
+        }
+      ]
+    },
+    {
+      id: "women",
+      title: "Women's Rights",
+      description: "Special protections and rights for women under Indian law",
+      rights: [
+        {
+          id: "women-1",
+          title: "Protection against domestic violence",
+          content: "Protection of women from any act of domestic violence under the Protection of Women from Domestic Violence Act 2005.",
+          section: "PWDVA Section 3"
+        },
+        {
+          id: "women-2",
+          title: "Right to maintenance",
+          content: "Right to claim maintenance from husband under Section 125 CrPC and Hindu Marriage Act.",
+          section: "CrPC Section 125"
+        }
+      ]
+    },
+    {
+      id: "rti",
+      title: "RTI Rights",
+      description: "Your right to information under the RTI Act 2005",
+      rights: [
+        {
+          id: "rti-1",
+          title: "Right to information",
+          content: "Every citizen has the right to information from public authorities under the RTI Act 2005.",
+          section: "RTI Section 3"
+        },
+        {
+          id: "rti-2",
+          title: "Right to inspect works and documents",
+          content: "Right to inspect works, documents, records, taking notes, extracts or certified copies of documents or records.",
+          section: "RTI Section 2(j)"
+        }
+      ]
+    }
+  ]
+
+  const toggleExpanded = (id: string) => {
+    setExpandedItems(prev =>
+      prev.includes(id)
+        ? prev.filter(item => item !== id)
+        : [...prev, id]
+    )
+  }
+
+  const activeCategory = categories.find(cat => cat.id === activeTab)
+
+  return (
+    <div className="page active" id="page-rights">
+      <div className="rights-visualizer">
+        <div className="rv-head">
+          <div className="rv-title">Rights Visualizer</div>
+          <div className="rv-subtitle">Explore your fundamental rights under Indian law</div>
+        </div>
+
+        <div className="rv-tabs">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              className={`rv-tab ${activeTab === category.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(category.id)}
+            >
+              {category.title}
+            </button>
+          ))}
+        </div>
+
+        <div className="rv-content">
+          <div className="rv-category-desc">
+            {activeCategory?.description}
+          </div>
+
+          <div className="rv-accordion">
+            {activeCategory?.rights.map((right) => (
+              <div key={right.id} className="rv-accordion-item">
+                <button
+                  className="rv-accordion-trigger"
+                  onClick={() => toggleExpanded(right.id)}
+                >
+                  <div className="rv-accordion-title">
+                    <span className="rv-right-icon">⚖️</span>
+                    <span>{right.title}</span>
+                  </div>
+                  <span className="rv-accordion-arrow">
+                    {expandedItems.includes(right.id) ? '−' : '+'}
+                  </span>
+                </button>
+                {expandedItems.includes(right.id) && (
+                  <div className="rv-accordion-content">
+                    <div className="rv-right-content">
+                      <p>{right.content}</p>
+                      {right.section && (
+                        <div className="rv-right-section">
+                          <span className="rv-section-tag">{right.section}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="rv-right-actions">
+                      <button className="rv-action-btn">📋 Copy</button>
+                      <button className="rv-action-btn">📖 Read More</button>
+                      <button className="rv-action-btn">🔗 Share</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rv-footer">
+          <div className="rv-disclaimer">
+            <span>⚠️</span>
+            This is general legal information. For specific legal advice, consult a qualified advocate.
+          </div>
+          <div className="rv-stats">
+            <div className="rv-stat">
+              <span className="rv-stat-num">{categories.length}</span>
+              <span className="rv-stat-label">Categories</span>
+            </div>
+            <div className="rv-stat">
+              <span className="rv-stat-num">
+                {categories.reduce((sum, cat) => sum + cat.rights.length, 0)}
+              </span>
+              <span className="rv-stat-label">Rights</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
           title: "Right to know the grounds of arrest",
           content:
             "Under Section 50(1) of the Code of Criminal Procedure (CrPC), the police officer arresting you must inform you of the full particulars of the offense and grounds for arrest. If arrested without a warrant, you must be told why you are being arrested.",
