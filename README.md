@@ -212,31 +212,38 @@ LegalAI is an AI-powered platform designed to demystify the Indian justice syste
 ## **✨ Core Features**
 
 LegalAI offers a comprehensive suite of intelligent tools to simplify your legal journey:
+<img width="1909" height="905" alt="image" src="https://github.com/user-attachments/assets/34d11669-19a7-4eb9-9f58-bf831d354d3b" />
+
 
 ### **1. AI Legal Assistant**
 Get instant, AI-powered responses to your legal queries. Our intelligent assistant can be configured with various language models (including LLaMA 3 8B for quick responses and LLaMA 3 70B for complex legal analysis) to match your specific needs for speed and depth of understanding.
 
-<img width="1000" height="500" alt="LegalAI Chatbot Interface" src="https://github.com/user-attachments/assets/9e7952d4-a2d9-44b2-838f-b387e34cb81f" />
+<img width="1917" height="914" alt="image" src="https://github.com/user-attachments/assets/7f743b51-0c7a-4d3f-9181-a6f40c592c44" />
+
 
 ### **2. Smart Case Monitor**
 Track and manage your legal cases with real-time updates. Stay informed about case statuses, upcoming hearing dates, and important developments. Features include advanced search capabilities, status-based filtering, and multiple sorting options for efficient case management.
 
-<img width="1000" height="500" alt="LegalAI Case Tracking Dashboard" src="https://github.com/user-attachments/assets/2765e469-05bb-4af0-90d0-f10c108f7f81" />
+<img width="1909" height="900" alt="image" src="https://github.com/user-attachments/assets/a51b8748-15bf-4ccb-bd97-fb78f1581e30" />
+
 
 ### **3. Interactive Rights Explorer**
 Discover and understand your legal rights through intuitive, interactive visualizations. Explore comprehensive categories including Arrest Rights, Property Rights, Consumer Protection, Employment Rights, and Family Law Rights, all presented in simple, accessible language.
 
-<img width="1000" height="500" alt="LegalAI Rights Visualizer" src="https://github.com/user-attachments/assets/bcf66795-0467-401f-ade1-52fef0361e87" />
+<img width="1919" height="903" alt="image" src="https://github.com/user-attachments/assets/69231ea6-78f4-4a93-a34f-fd01455f75c9" />
+
 
 ### **4. Document Intelligence**
 Upload complex legal documents (supporting PDF, Word, and Text formats up to 10MB) and receive simplified, plain-language explanations of their content, helping you understand complex legal terminology and clauses with ease.
 
-<img width="1000" height="500" alt="LegalAI Document Simplifier" src="https://github.com/user-attachments/assets/d4b18a2e-e635-48fc-9cb8-a9deae2affce" />
+<img width="1918" height="908" alt="image" src="https://github.com/user-attachments/assets/ac82ec3c-4fdd-4843-9c5d-ae54c74d403a" />
+
 
 ### **5. Legal Connect Hub**
 Connect with verified legal aid providers, experienced lawyers, and legal clinics across India. Search by professional name, area of specialization, or geographic location, with advanced filtering options by state and service type to find the perfect legal assistance.
 
-<img width="1000" height="500" alt="LegalAI Help Finder" src="https://github.com/user-attachments/assets/76e2937c-6103-43d5-a23d-0ccd3903c125" />
+<img width="1912" height="960" alt="image" src="https://github.com/user-attachments/assets/4439f0ef-33c5-4f51-b435-0eab2dd82489" />
+
 
 ## **🛠️ Technology Stack**
 
@@ -255,7 +262,7 @@ Quick start (frontend)
 1. Install dependencies:
 
 ```powershell
-cd C:\D\Legal AI\legalease-clean
+cd C:\D\Legal AI\legal-AI-clean
 npm install
 ```
 
