@@ -248,7 +248,7 @@ export default function RightsPage() {
                     <CardDescription>{category.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
+                    <Accordion className="w-full">
                       <AnimatePresence>
                         {category.rights.map((right) => (
                           <AccordionItem key={right.id} value={right.id}>
@@ -290,9 +290,12 @@ export default function RightsPage() {
             Remember that laws can change, and specific circumstances may affect how these rights apply to your situation. When facing a legal issue, it's always advisable to consult with a qualified legal professional.
           </p>
           <div className="flex justify-center mt-6">
-            <Button asChild className="bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600">
-              <a href="/help">Find Legal Help</a>
-            </Button>
+          <a
+  href="/help"
+  className="inline-flex h-8 items-center justify-center rounded-lg bg-teal-600 px-4 py-2 text-white hover:bg-teal-700"
+>
+  Find Legal Help
+          </a>
           </div>
         </div>
       </div>

@@ -1,26 +1,63 @@
+import json
 import os
-from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
+
+from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import PineconeVectorStore
+from langchain_core.documents import Document
 
 load_dotenv()
 
-# Initialize Pinecone
-pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+# =========================
+# LOAD DATASET
+# =========================
 
-index_name = "legal-docs"
+with open(
+    "processed_legal_rag.json",
+    "r",
+    encoding="utf-8"
+) as f:
 
-# Create the index if it doesn't exist
-if index_name not in pc.list_indexes().names():
-    print(f"Creating index: {index_name}")
-    pc.create_index(
-        name=index_name,
-        dimension=1536, # OpenAI embedding dimension
-        metric="cosine",
-        spec=ServerlessSpec(
-            cloud="aws",
-            region="us-east-1"
-        )
+    data = json.load(f)
+
+# =========================
+# CREATE DOCUMENTS
+# =========================
+
+documents = []
+
+for item in data:
+
+    doc = Document(
+        page_content=item["text"],
+        metadata=item["metadata"]
     )
-    print("Index created successfully!")
-else:
-    print(f"Index {index_name} already exists.")
+
+    documents.append(doc)
+
+print(f"Loaded {len(documents)} documents")
+
+# =========================
+# EMBEDDINGS
+# =========================
+
+embeddings = OpenAIEmbeddings(
+    openai_api_key=os.environ.get("OPENAI_API_KEY")
+)
+
+# =========================
+# PINECONE VECTOR STORE
+# =========================
+
+vector_store = PineconeVectorStore(
+    index_name="legal-docs",
+    embedding=embeddings
+)
+
+# =========================
+# ADD TO PINECONE
+# =========================
+
+vector_store.add_documents(documents)
+
+print("Documents uploaded successfully!")

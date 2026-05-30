@@ -181,7 +181,10 @@ export default function DashboardPage() {
 
           <div className="flex items-center space-x-2">
             <Filter className="h-4 w-4 text-slate-500" />
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <Select
+              value={filterStatus}
+              onValueChange={(value) => setFilterStatus(value ?? "all")}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>

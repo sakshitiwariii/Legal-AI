@@ -156,7 +156,10 @@ export default function HelpPage() {
 
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-              <Select value={stateFilter} onValueChange={setStateFilter}>
+              <Select
+                value={stateFilter}
+                onValueChange={(value) => setStateFilter(value ?? "all")}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Filter by state" />
                 </SelectTrigger>
@@ -173,7 +176,10 @@ export default function HelpPage() {
 
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <Select
+                value={typeFilter}
+                onValueChange={(value) => setTypeFilter(value ?? "all")}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
