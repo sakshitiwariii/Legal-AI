@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
-import { Scale } from "lucide-react";
+import { Scale, LogIn } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
@@ -31,8 +31,9 @@ export default function RootLayout({
               <Link href="/help" className="transition-colors hover:text-teal-600 text-slate-600">Legal Help</Link>
               <Link href="/dashboard" className="transition-colors hover:text-teal-600 text-slate-600">Dashboard</Link>
             </nav>
-            <div className="flex items-center space-x-4">
-              <Link href="/chat" className="text-sm font-medium hover:underline underline-offset-4">Sign In</Link>
+            <div className="flex items-center space-x-2">
+              <LogIn className="h-5 w-5 text-slate-700" />
+              <Link href="/login" className="text-sm font-medium hover:underline underline-offset-4">Sign In</Link>
             </div>
           </div>
         </header>

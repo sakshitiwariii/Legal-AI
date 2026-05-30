@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Send, User, Scale, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,12 +14,24 @@ type Message = {
 }
 
 export default function ChatPage() {
+  const router = useRouter()
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hello! I am your Legal AI assistant powered by advanced RAG technology. How can I help you today?" }
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [token, setToken] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const backendUrl = process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL || "http://localhost:8000"
+
+  useEffect(() => {
+    const storedToken = window.localStorage.getItem("legalai_token")
+    if (!storedToken) {
+      router.replace("/login")
+      return
+    }
+    setToken(storedToken)
+  }, [router])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -33,19 +46,33 @@ export default function ChatPage() {
     setIsLoading(true)
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${API_URL}/chat`, {
+      if (!token) {
+        throw new Error("Authentication required. Please sign in.")
+      }
+
+      const response = await fetch(`${backendUrl}/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({
           messages: [...messages, { role: "user", content: userMsg }],
           chat_id: "default-session"
         })
       })
-      
-      if (!response.ok) throw new Error("Failed to fetch")
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          window.localStorage.removeItem("legalai_token")
+          router.replace("/login")
+          throw new Error("Session expired. Please sign in again.")
+        }
+
+        throw new Error("Failed to fetch")
+      }
+
       const data = await response.json()
-      
       setMessages(prev => [...prev, { role: "assistant", content: data.content }])
     } catch (error) {
       setMessages(prev => [...prev, { role: "assistant", content: "I'm sorry, I'm having trouble connecting to the backend server. Please ensure the Python backend is running." }])
