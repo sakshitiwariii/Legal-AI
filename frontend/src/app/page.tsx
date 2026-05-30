@@ -35,33 +35,39 @@ export default function LandingPage() {
       <section className="w-full py-12 md:py-24 lg:py-32 bg-white">
         <div className="container px-4 md:px-6 mx-auto">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="flex flex-col items-center space-y-4 text-center p-6 border rounded-xl bg-slate-50 shadow-sm transition-all hover:shadow-md">
-              <div className="p-3 rounded-full bg-teal-100">
-                <MessageSquare className="h-8 w-8 text-teal-700" />
+            <Link href="/chat" className="group">
+              <div className="flex flex-col items-center space-y-4 text-center p-6 border rounded-xl bg-slate-50 shadow-sm transition-all hover:shadow-md hover:border-teal-600 cursor-pointer h-full">
+                <div className="p-3 rounded-full bg-teal-100 group-hover:bg-teal-200 transition-colors">
+                  <MessageSquare className="h-8 w-8 text-teal-700" />
+                </div>
+                <h3 className="text-xl font-bold group-hover:text-teal-700 transition-colors">AI Chat Assistant</h3>
+                <p className="text-slate-600 group-hover:text-slate-700 transition-colors">
+                  Ask legal questions and get answers based on Indian laws and constitutional rights.
+                </p>
               </div>
-              <h3 className="text-xl font-bold">AI Chat Assistant</h3>
-              <p className="text-slate-600">
-                Ask legal questions and get answers based on Indian laws and constitutional rights.
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-4 text-center p-6 border rounded-xl bg-slate-50 shadow-sm transition-all hover:shadow-md">
-              <div className="p-3 rounded-full bg-teal-100">
-                <FileText className="h-8 w-8 text-teal-700" />
+            </Link>
+            <Link href="/simplify" className="group">
+              <div className="flex flex-col items-center space-y-4 text-center p-6 border rounded-xl bg-slate-50 shadow-sm transition-all hover:shadow-md hover:border-teal-600 cursor-pointer h-full">
+                <div className="p-3 rounded-full bg-teal-100 group-hover:bg-teal-200 transition-colors">
+                  <FileText className="h-8 w-8 text-teal-700" />
+                </div>
+                <h3 className="text-xl font-bold group-hover:text-teal-700 transition-colors">Document Simplifier</h3>
+                <p className="text-slate-600 group-hover:text-slate-700 transition-colors">
+                  Upload complex legal documents and contracts to receive easy-to-understand summaries.
+                </p>
               </div>
-              <h3 className="text-xl font-bold">Document Simplifier</h3>
-              <p className="text-slate-600">
-                Upload complex legal documents and contracts to receive easy-to-understand summaries.
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-4 text-center p-6 border rounded-xl bg-slate-50 shadow-sm transition-all hover:shadow-md">
-              <div className="p-3 rounded-full bg-teal-100">
-                <Shield className="h-8 w-8 text-teal-700" />
+            </Link>
+            <Link href="/rights" className="group">
+              <div className="flex flex-col items-center space-y-4 text-center p-6 border rounded-xl bg-slate-50 shadow-sm transition-all hover:shadow-md hover:border-teal-600 cursor-pointer h-full">
+                <div className="p-3 rounded-full bg-teal-100 group-hover:bg-teal-200 transition-colors">
+                  <Shield className="h-8 w-8 text-teal-700" />
+                </div>
+                <h3 className="text-xl font-bold group-hover:text-teal-700 transition-colors">Know Your Rights</h3>
+                <p className="text-slate-600 group-hover:text-slate-700 transition-colors">
+                  A visual explorer of your fundamental rights, tailored for common situations.
+                </p>
               </div>
-              <h3 className="text-xl font-bold">Know Your Rights</h3>
-              <p className="text-slate-600">
-                A visual explorer of your fundamental rights, tailored for common situations.
-              </p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
