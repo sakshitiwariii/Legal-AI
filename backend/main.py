@@ -115,25 +115,73 @@ class AuthRequest(BaseModel):
     password: str
 
 
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    name: str
+
+
 class ChatRequest(BaseModel):
     messages: list[dict]
     model: str = "gpt-3.5-turbo"
     chat_id: str
 
 
-@app.post("/auth/login")
-async def login(auth_request: AuthRequest):
-    if auth_request.email != AUTH_EMAIL or auth_request.password != AUTH_PASSWORD:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
-        )
+# =========================
+# IN-MEMORY USER STORE
+# =========================
 
-    access_token = create_access_token({"sub": auth_request.email})
+users_db: dict = {}
+
+
+@app.post("/auth/signup")
+async def signup(signup_request: SignupRequest):
+    # Check if user already exists
+    if signup_request.email in users_db:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
+        )
+    
+    # Store user (in production, hash the password)
+    users_db[signup_request.email] = {
+        "name": signup_request.name,
+        "password": signup_request.password,  # In production, use bcrypt or similar
+        "email": signup_request.email
+    }
+    
+    access_token = create_access_token({"sub": signup_request.email})
     return {
         "access_token": access_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "message": "Account created successfully"
     }
+
+
+@app.post("/auth/login")
+async def login(auth_request: AuthRequest):
+    # Check in-memory user database
+    user = users_db.get(auth_request.email)
+    
+    if user and user["password"] == auth_request.password:
+        access_token = create_access_token({"sub": auth_request.email})
+        return {
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
+    
+    # Fall back to demo credentials for testing
+    if auth_request.email == AUTH_EMAIL and auth_request.password == AUTH_PASSWORD:
+        access_token = create_access_token({"sub": auth_request.email})
+        return {
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
+    
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid credentials",
+    )
 
 
 # =========================

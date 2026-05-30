@@ -22,7 +22,6 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [token, setToken] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const backendUrl = process.env.NEXT_PUBLIC_PYTHON_BACKEND_URL || "http://localhost:8000"
 
   useEffect(() => {
     const storedToken = window.localStorage.getItem("legalai_token")
@@ -50,7 +49,7 @@ export default function ChatPage() {
         throw new Error("Authentication required. Please sign in.")
       }
 
-      const response = await fetch(`${backendUrl}/chat`, {
+      const response = await fetch(`/api/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

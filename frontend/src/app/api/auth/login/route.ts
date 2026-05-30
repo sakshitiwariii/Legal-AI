@@ -4,25 +4,18 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const backendUrl = process.env.PYTHON_BACKEND_URL || "http://localhost:8000";
-    const authorization = request.headers.get("authorization");
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-
-    if (authorization) {
-      headers.Authorization = authorization;
-    }
-
-    const response = await fetch(`${backendUrl}/chat`, {
+    const response = await fetch(`${backendUrl}/auth/login`, {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      const errorBody = await response.text().catch(() => "")
-      throw new Error(`Backend responded with status: ${response.status} ${errorBody}`);
+      const errorBody = await response.json().catch(() => null);
+      return NextResponse.json(errorBody || { detail: "Login failed" }, { status: response.status });
     }
 
     const data = await response.json();
@@ -30,7 +23,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error connecting to Python backend:", error);
     return NextResponse.json(
-      { error: "Failed to connect to backend service" },
+      { detail: "Failed to connect to backend service" },
       { status: 500 }
     );
   }
